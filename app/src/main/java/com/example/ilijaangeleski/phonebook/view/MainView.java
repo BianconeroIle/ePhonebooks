@@ -6,5 +6,7 @@ package com.example.ilijaangeleski.phonebook.view;
 
 public interface MainView {
     void notifyChange();
-    void checkInternetConnection();
+    boolean checkInternetConnection();
+    void noInternetConnection();
+    void errorGettingUsers();
 }

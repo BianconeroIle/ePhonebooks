@@ -1,18 +1,10 @@
 package com.example.ilijaangeleski.phonebook.manager;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.example.ilijaangeleski.phonebook.api.ApiConstants;
 import com.example.ilijaangeleski.phonebook.api.UserAPI;
 import com.example.ilijaangeleski.phonebook.model.ResponseDTO;
-import com.example.ilijaangeleski.phonebook.model.User;
-import com.example.ilijaangeleski.phonebook.view.MainView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -26,21 +18,35 @@ import static android.content.ContentValues.TAG;
  */
 
 public class MainManager {
+    UserAPI api;
 
-    MainView view;
-    public static final List<User> items = new ArrayList<>();
+    public MainManager() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(ApiConstants.URL)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
 
-    public boolean checkForInternetConnection(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            return true;
-        } else
-            return false;
+        api = restAdapter.create(UserAPI.class);
     }
 
+    public void getUsers(int page, final GetUsersCallback callback) {
+        api.getUsers("egym", page, 10, new Callback<ResponseDTO>() {
+            @Override
+            public void success(ResponseDTO responseDTO, Response response) {
+                Log.d(TAG, "successful getting users from server" + responseDTO);
+                callback.success(responseDTO);
+            }
 
-    public List<User> getItems() {
-        return items;
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d(TAG, "error getting users from server" + error);
+                callback.failure(error);
+            }
+        });
+    }
+
+    public interface GetUsersCallback {
+        void success(ResponseDTO responseDTO);
+        void failure(RetrofitError error);
     }
 }
