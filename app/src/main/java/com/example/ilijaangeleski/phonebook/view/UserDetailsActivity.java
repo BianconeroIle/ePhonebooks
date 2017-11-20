@@ -18,8 +18,6 @@ import com.example.ilijaangeleski.phonebook.presenter.UserDetailsPresenter;
 import com.example.ilijaangeleski.phonebook.util.CircleTransform;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -124,7 +122,6 @@ public class UserDetailsActivity extends AppCompatActivity implements UserDetail
             }
         });
     }
-
 
     public void sendEmail() {
         Intent intent = new Intent(Intent.ACTION_SEND);

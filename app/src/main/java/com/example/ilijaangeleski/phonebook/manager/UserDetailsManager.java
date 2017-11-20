@@ -11,7 +11,7 @@ import retrofit.RestAdapter;
  */
 
 public class UserDetailsManager {
-    UserAPI api;
+    private UserAPI api;
 
     public UserDetailsManager(){
         RestAdapter restAdapter = new RestAdapter.Builder()
