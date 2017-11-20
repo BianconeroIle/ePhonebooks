@@ -22,11 +22,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<User> items;
     private Context context;
     private int layoutResourceId;
+    private OnUserItemClick listener;
 
     public RecyclerViewAdapter(List<User> items, Context context, int layoutResourceId) {
         this.items = items;
         this.context = context;
         this.layoutResourceId = layoutResourceId;
+    }
+
+    public interface OnUserItemClick {
+        void onUserClick(User user, ImageView profileImage);
     }
 
     @Override
@@ -37,14 +42,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapter.MyViewHolder holder, int position) {
-        User current = items.get(position);
+    public void onBindViewHolder(final RecyclerViewAdapter.MyViewHolder holder, int position) {
+        final User current = items.get(position);
         holder.username.setText(current.getLogin().getUsername());
         holder.phone.setText(current.getPhone());
 
         Picasso.with(context).load(current.getPicture().getLarge())
-                .transform(new CircleTransform()).placeholder(R.mipmap.ic_launcher_round).error(R.mipmap.ic_launcher_round)
+                .transform(new CircleTransform()).placeholder(R.mipmap.ic_profile).error(R.mipmap.ic_profile)
                 .into(holder.userPhoto);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) {
+                    listener.onUserClick(current, holder.userPhoto);
+                }
+            }
+        });
     }
 
     @Override
@@ -63,5 +77,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             userPhoto = (ImageView) itemView.findViewById(R.id.profileImage);
 
         }
+    }
+    public void setOnUserItemClick(OnUserItemClick listener) {
+        this.listener = listener;
     }
 }
